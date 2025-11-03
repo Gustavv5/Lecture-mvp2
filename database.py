@@ -15,3 +15,26 @@ def init_db():
     ''')
     conn.commit()
     conn.close()
+
+def save_to_db(audio_file, transcript, summary):
+
+    conn = sqlite3.connect('transcriptions.db')
+    cursor = conn.cursor()
+    cursor.execute(
+        'INSERT INTO transcriptions (audio_file, transcript, summary) VALUES (?, ?, ?)',
+        (audio_file, transcript, summary)
+    )
+    conn.commit()
+    conn.close()
+
+def get_transcriptions():
+
+    conn = sqlite3.connect('transcriptions.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM transcriptions')
+    rows = cursor.fetchall()
+    conn.close()
+
+    return rows
+
+    
