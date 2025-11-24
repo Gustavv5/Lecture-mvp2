@@ -2,7 +2,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import whisper
-from backend.database import init_db, insert_transcriptions, get_transcriptions
+from database import init_db, insert_transcriptions, get_transcriptions
 
 app = Flask(__name__)
 CORS(app)

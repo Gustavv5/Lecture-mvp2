@@ -1,5 +1,5 @@
 
-from backend.app import transcribe_and_summarize
+from app import transcribe_and_summarize
 
 def test_transcription_summary():
 
