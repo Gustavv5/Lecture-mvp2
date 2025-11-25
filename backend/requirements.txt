@@ -30,4 +30,9 @@ urllib3==2.5.0
 flask
 flask-cors
 psycopg2-binary
-whisper
+openai>=1.0.0
+python-dotenv
+gunicorn
+git+https://github.com/openai/whisper.git
+torch==2.1.0+cpu --extra-index-url https://download.pytorch.org/whl/cpu
+
