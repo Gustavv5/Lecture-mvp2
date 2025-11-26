@@ -3,6 +3,13 @@ import { Routes, Route, Link } from "react-router-dom";
 import Dashboard from "./pages/Dashboard.jsx";
 import Upload from "./pages/Upload.jsx";
 import LectureDetail from "./pages/LectureDetail.jsx";
+import { ACCESS_CODE } from "./api/api";
+
+if (!ACCESS_CODE) {
+  return <div style={{ padding: 20 }}>❌ Access code missing in URL.<br/>
+  Add ?code=YOURCODE to the address bar.</div>;
+}
+
 
 export default function App() {
   return (
@@ -14,7 +21,7 @@ export default function App() {
         </Link>
         <nav className="nav-links">
           <Link to="/">Dashboard</Link>
-          <Link to="/upload">New Lecture</Link>
+          <Link to={withCode("/upload")}>New Lecture</Link>
         </nav>
       </header>
 
