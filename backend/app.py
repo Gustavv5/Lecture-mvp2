@@ -5,6 +5,7 @@ from flask_cors import CORS
 from openai import OpenAI
 from dotenv import load_dotenv
 
+
 from database import (
     init_db,
     insert_transcription,

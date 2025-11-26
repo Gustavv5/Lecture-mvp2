@@ -44,10 +44,10 @@ def get_transcriptions():
     conn.close()
     return rows
 
-def get_transcription_by_id(id):
+def get_transcription_by_id(lecture_id):
     conn = get_conn()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute("SELECT * FROM transcriptions WHERE id = %s;", (id,))
+    cur.execute("SELECT * FROM transcriptions WHERE id = %s;", (lecture_id,))
     row = cur.fetchone()
     cur.close()
     conn.close()
