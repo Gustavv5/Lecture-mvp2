@@ -3,7 +3,14 @@ import { Routes, Route, Link } from "react-router-dom";
 import Dashboard from "./pages/Dashboard.jsx";
 import Upload from "./pages/Upload.jsx";
 import LectureDetail from "./pages/LectureDetail.jsx";
+import AccessGate from "./components/AccessGate";
 import { ACCESS_CODE } from "./api/api";
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <AccessGate>
+    <App />
+  </AccessGate>
+);
 
 if (!ACCESS_CODE) {
   return <div style={{ padding: 20 }}>❌ Access code missing in URL.<br/>
