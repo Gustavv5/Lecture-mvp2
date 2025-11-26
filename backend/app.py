@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from openai import OpenAI
 from dotenv import load_dotenv
+from functools import wraps
 
 
 from database import (
@@ -20,16 +21,24 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
+with app.app_context():
+    try:
+        init_db()
+    except Exception as e:
+        print("DB init failed:", e)
+
 # ------------ ACCESS CODE PROTECTION ------------
 ACCESS_CODE = os.getenv("ACCESS_CODE")
 
+
+
 def require_access_code(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
         code = request.headers.get("X-ACCESS-CODE")
         if code != ACCESS_CODE:
             return jsonify({"error": "Unauthorized"}), 401
         return func(*args, **kwargs)
-    wrapper.__name__ = func.__name__
     return wrapper
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
