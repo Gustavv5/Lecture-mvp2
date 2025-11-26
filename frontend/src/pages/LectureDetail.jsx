@@ -9,7 +9,9 @@ export default function LectureDetail() {
 
   const lecture = location.state?.lecture;
 
-  const [showFull, setShowFull] = useState(false);
+  // Two separate expand/collapse states
+  const [showFullSummary, setShowFullSummary] = useState(false);
+  const [showFullTranscript, setShowFullTranscript] = useState(false);
 
   const keyPoints = useMemo(() => {
     if (!lecture?.transcript) return [];
@@ -17,7 +19,6 @@ export default function LectureDetail() {
   }, [lecture]);
 
   if (!lecture) {
-    // Simpler than re-fetching; good enough for MVP
     return (
       <div className="page">
         <h1 className="page-title">Lecture {id}</h1>
@@ -40,45 +41,46 @@ export default function LectureDetail() {
       </button>
 
       <h1 className="page-title">
-  {(lecture.filename || "Lecture").replace(/\.[^/.]+$/, "")}
-</h1>
+        {(lecture.filename || "Lecture").replace(/\.[^/.]+$/, "")}
+      </h1>
 
       <p className="page-subtitle">Category: {category}</p>
 
+      {/* ---- SUMMARY ---- */}
       <div className="result-card">
-  <h2 className="section-title">Summary</h2>
+        <h2 className="section-title">Summary</h2>
 
-  {!showFull ? (
-    <>
-      <p className="summary-text">
-        {lecture.summary?.slice(0, 400) || "No summary"}
-        {lecture.summary && lecture.summary.length > 400 && "…"}
-      </p>
+        {!showFullSummary ? (
+          <>
+            <p className="summary-text">
+              {lecture.summary?.slice(0, 400) || "No summary"}
+              {lecture.summary && lecture.summary.length > 400 && "…"}
+            </p>
 
-      {lecture.summary && lecture.summary.length > 400 && (
-        <button
-          className="secondary-button small"
-          onClick={() => setShowFull(true)}
-        >
-          Show full summary
-        </button>
-      )}
-    </>
-  ) : (
-    <>
-      <p className="summary-text">{lecture.summary || "No summary"}</p>
+            {lecture.summary && lecture.summary.length > 400 && (
+              <button
+                className="secondary-button small"
+                onClick={() => setShowFullSummary(true)}
+              >
+                Show full summary
+              </button>
+            )}
+          </>
+        ) : (
+          <>
+            <p className="summary-text">{lecture.summary || "No summary"}</p>
 
-      <button
-        className="secondary-button small"
-        onClick={() => setShowFull(false)}
-      >
-        Show less
-      </button>
-    </>
-  )}
-</div>
+            <button
+              className="secondary-button small"
+              onClick={() => setShowFullSummary(false)}
+            >
+              Show less
+            </button>
+          </>
+        )}
+      </div>
 
-
+      {/* ---- KEY POINTS ---- */}
       <div className="result-card">
         <h2 className="section-title">Key points</h2>
         {keyPoints.length === 0 ? (
@@ -92,18 +94,21 @@ export default function LectureDetail() {
         )}
       </div>
 
+      {/* ---- TRANSCRIPT ---- */}
       <div className="result-card">
         <h2 className="section-title">Transcript</h2>
-        {!showFull ? (
+
+        {!showFullTranscript ? (
           <>
             <p className="transcript-preview">
               {lecture.transcript?.slice(0, 400) || "No transcript"}
               {lecture.transcript && lecture.transcript.length > 400 && "…"}
             </p>
+
             {lecture.transcript && lecture.transcript.length > 400 && (
               <button
                 className="secondary-button small"
-                onClick={() => setShowFull(true)}
+                onClick={() => setShowFullTranscript(true)}
               >
                 Show full transcript
               </button>
@@ -114,9 +119,10 @@ export default function LectureDetail() {
             <p className="transcript-full">
               {lecture.transcript || "No transcript"}
             </p>
+
             <button
               className="secondary-button small"
-              onClick={() => setShowFull(false)}
+              onClick={() => setShowFullTranscript(false)}
             >
               Show less
             </button>
