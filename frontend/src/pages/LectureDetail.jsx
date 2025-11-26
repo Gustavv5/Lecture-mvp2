@@ -46,9 +46,38 @@ export default function LectureDetail() {
       <p className="page-subtitle">Category: {category}</p>
 
       <div className="result-card">
-        <h2 className="section-title">Summary</h2>
-        <p className="summary-text">{lecture.summary}</p>
-      </div>
+  <h2 className="section-title">Summary</h2>
+
+  {!showFull ? (
+    <>
+      <p className="summary-text">
+        {lecture.summary?.slice(0, 400) || "No summary"}
+        {lecture.summary && lecture.summary.length > 400 && "…"}
+      </p>
+
+      {lecture.summary && lecture.summary.length > 400 && (
+        <button
+          className="secondary-button small"
+          onClick={() => setShowFull(true)}
+        >
+          Show full summary
+        </button>
+      )}
+    </>
+  ) : (
+    <>
+      <p className="summary-text">{lecture.summary || "No summary"}</p>
+
+      <button
+        className="secondary-button small"
+        onClick={() => setShowFull(false)}
+      >
+        Show less
+      </button>
+    </>
+  )}
+</div>
+
 
       <div className="result-card">
         <h2 className="section-title">Key points</h2>
