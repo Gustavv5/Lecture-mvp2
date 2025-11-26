@@ -10,7 +10,8 @@ if (urlCode) {
 }
 
 // Use saved code for every request
-export const ACCESS_CODE = localStorage.getItem("ACCESS_CODE");
+export const ACCESS_CODE = localStorage.getItem("ACCESS_CODE") || null;
+
 
 
 // ---------------- API BASE URL ---------------- //
