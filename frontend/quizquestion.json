@@ -1,0 +1,39 @@
+{
+  "name": "QuizQuestion",
+  "type": "object",
+  "properties": {
+    "lecture_id": {
+      "type": "string",
+      "description": "ID of the associated lecture"
+    },
+    "question": {
+      "type": "string",
+      "description": "The quiz question"
+    },
+    "options": {
+      "type": "array",
+      "description": "Multiple choice options",
+      "items": {
+        "type": "string"
+      }
+    },
+    "correct_answer": {
+      "type": "string",
+      "description": "The correct answer"
+    },
+    "explanation": {
+      "type": "string",
+      "description": "Explanation of the correct answer"
+    },
+    "category": {
+      "type": "string",
+      "description": "Category of the question"
+    }
+  },
+  "required": [
+    "lecture_id",
+    "question",
+    "options",
+    "correct_answer"
+  ]
+}

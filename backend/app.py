@@ -1,16 +1,19 @@
 import os
+import tempfile
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from openai import OpenAI
 from database import insert_transcription, get_transcriptions
-import tempfile
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# ----------- UPLOAD & TRANSCRIBE ------------
+# ------------ TRANSCRIBE ROUTE ------------
 @app.route("/transcribe", methods=["POST"])
 def transcribe_audio():
     if "file" not in request.files:
@@ -18,22 +21,24 @@ def transcribe_audio():
 
     file = request.files["file"]
 
-    # Save incoming audio temporarily
-    with tempfile.NamedTemporaryFile(delete=False) as temp:
+    # Save file temporarily
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as temp:
         file.save(temp.name)
         audio_path = temp.name
 
-    # Send audio to OpenAI Whisper API
-    with open(audio_path, "rb") as audio:
-        result = client.audio.transcriptions.create(
-            model="whisper-1",
-            file=audio
-        )
+    # Send to Whisper
+    try:
+        with open(audio_path, "rb") as audio:
+            result = client.audio.transcriptions.create(
+                model="whisper-1",
+                file=audio
+            )
+    except Exception as e:
+        return {"error": str(e)}, 500
 
     transcript = result.text
     summary = transcript[:150] + "..."
 
-    # Save to DB
     insert_transcription(file.filename, transcript, summary)
 
     return jsonify({
@@ -42,13 +47,13 @@ def transcribe_audio():
     })
 
 
-# ----------- GET HISTORY ------------
+# ------------ HISTORY ROUTE ------------
 @app.route("/history", methods=["GET"])
 def history():
     return jsonify(get_transcriptions())
 
 
-# ----------- HOME ROUTE ------------
+# ------------ HOME ROUTE ------------
 @app.route("/", methods=["GET"])
 def home():
     return {"message": "Lecture backend is running"}
