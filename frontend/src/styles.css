@@ -288,7 +288,11 @@ body {
   font-size: 14px;
   color: #475569;
   line-height: 1.5;
+  max-height: 200px; /* adjust */
+  overflow-y: auto;
+  padding-right: 6px;
 }
+
 
 .keypoints-list {
   padding-left: 18px;

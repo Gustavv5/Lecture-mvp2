@@ -16,8 +16,9 @@ export default function LectureCard({ lecture }) {
           <div className="lecture-card-header">
             <div>
               <h3 className="lecture-title">
-                {lecture.filename || "Untitled lecture"}
-              </h3>
+  {(lecture.filename || "Untitled lecture").replace(/\.[^/.]+$/, "")}
+</h3>
+
               <p className="lecture-category">{category}</p>
             </div>
             <span className="lecture-chip">{category}</span>

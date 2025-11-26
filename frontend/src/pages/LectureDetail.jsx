@@ -39,7 +39,10 @@ export default function LectureDetail() {
         ← Back
       </button>
 
-      <h1 className="page-title">{lecture.filename || "Lecture"}</h1>
+      <h1 className="page-title">
+  {(lecture.filename || "Lecture").replace(/\.[^/.]+$/, "")}
+</h1>
+
       <p className="page-subtitle">Category: {category}</p>
 
       <div className="result-card">
