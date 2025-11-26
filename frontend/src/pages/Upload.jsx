@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { uploadAndTranscribe } from "../api/api.js";
+import { uploadAudio } from "../api/api.js";
 import AudioPlayer from "../components/AudioPlayer.jsx";
 
 export default function Upload() {
@@ -26,7 +26,7 @@ export default function Upload() {
     try {
       setLoading(true);
       setStatus("Uploading and transcribing…");
-      const data = await uploadAndTranscribe(file);
+      const data = await uploadAudio(file);
       setResult(data);
       setStatus("Done!");
     } catch (err) {

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { extractKeyPoints, guessCategory } from "../utils.js";
+import { extractKeyPoints, guessCategory } from "../utils/utils.js";
 
 export default function LectureDetail() {
   const location = useLocation();

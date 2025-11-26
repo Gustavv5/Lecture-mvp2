@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { guessCategory } from "../utils/utils.js";
+import { withCode } from "..utils/urlTools.js";
 
 export default function LectureCard({ lecture }) {
   const category = guessCategory(lecture.transcript || "");
