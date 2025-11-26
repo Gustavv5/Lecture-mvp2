@@ -6,7 +6,9 @@ export default function LectureCard({ lecture }) {
   const category = guessCategory(lecture.transcript || "");
 
   return (
-    <Link to={`/lecture/${lecture.id}`} state={{ lecture }}>
+    <Link to={withCode(`/lecture/${lecture.id}`)}
+          state={{ lecture }}
+    >
       <div className="lecture-card">
         <div className="lecture-card-top-bar" />
         <div className="lecture-card-body">
