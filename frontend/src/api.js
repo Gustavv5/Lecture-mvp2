@@ -1,34 +1,59 @@
-// Read ?code=SECRET from URL
+// ---------------- ACCESS CODE HANDLING ---------------- //
+
+// Try to load ?code=SECRET from URL OR from stored localStorage
 const urlParams = new URLSearchParams(window.location.search);
-export const ACCESS_CODE = urlParams.get("code") || null;
+const urlCode = urlParams.get("code");
+
+// If URL contains a code, save it
+if (urlCode) {
+  localStorage.setItem("ACCESS_CODE", urlCode);
+}
+
+// Use saved code for every request
+export const ACCESS_CODE = localStorage.getItem("ACCESS_CODE");
+
+
+// ---------------- API BASE URL ---------------- //
 
 const API_BASE = "https://lecture-mvp2-1.onrender.com";
+
+
+// ---------------- UNIVERSAL API FETCH HELPER ---------------- //
+
+async function apiFetch(endpoint, options = {}) {
+  return fetch(`${API_BASE}${endpoint}`, {
+    ...options,
+    headers: {
+      "X-ACCESS-CODE": ACCESS_CODE,
+      ...(options.headers || {}),
+    },
+  }).then((res) => res.json());
+}
+
+
+// ---------------- EXPORTED FRONTEND FUNCTIONS ---------------- //
 
 export async function uploadAudio(file) {
   const formData = new FormData();
   formData.append("file", file);
 
-  return fetch(`${API_BASE}/transcribe`, {
+  return apiFetch("/transcribe", {
     method: "POST",
-    headers: {
-      "X-ACCESS-CODE": ACCESS_CODE,
-    },
     body: formData,
-  }).then((r) => r.json());
+  });
 }
 
 export async function getHistory() {
-  return fetch(`${API_BASE}/history`, {
-    headers: {
-      "X-ACCESS-CODE": ACCESS_CODE,
-    },
-  }).then((r) => r.json());
+  return apiFetch("/history");
 }
 
 export async function getLecture(id) {
-  return fetch(`${API_BASE}/lecture/${id}`, {
-    headers: {
-      "X-ACCESS-CODE": ACCESS_CODE,
-    },
-  }).then((r) => r.json());
+  return apiFetch(`/lecture/${id}`);
 }
+
+export async function deleteLecture(id) {
+  return apiFetch(`/lecture/${id}`, {
+    method: "DELETE",
+  });
+}
+
