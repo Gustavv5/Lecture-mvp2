@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchHistory, deleteLecture } from "../api/api.js";
+import { getHistory, deleteLecture } from "../api/api.js";
 import LectureCard from "../components/LectureCard.jsx";
 
 export default function Dashboard() {
@@ -14,7 +14,7 @@ export default function Dashboard() {
   async function loadHistory() {
     try {
       setLoading(true);
-      const data = await fetchHistory();
+      const data = await getHistory();
       setLectures(data);
       setError("");
     } catch (err) {
