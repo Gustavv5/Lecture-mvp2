@@ -22,16 +22,14 @@ CORS(app)
 # ------------ ACCESS CODE PROTECTION ------------
 ACCESS_CODE = os.getenv("ACCESS_CODE")
 
-@app.before_request
-def require_access_code():
-    # allow the home route without code
-    if request.path == "/" or request.method == "OPTIONS":
-        return None  
-
-    provided = request.headers.get("X-ACCESS-CODE")
-    if provided != ACCESS_CODE:
-        return jsonify({"error": "Unauthorized - missing or wrong access code"}), 401
-
+def require_access_code(func):
+    def wrapper(*args, **kwargs):
+        code = request.headers.get("X-ACCESS-CODE")
+        if code != ACCESS_CODE:
+            return jsonify({"error": "Unauthorized"}), 401
+        return func(*args, **kwargs)
+    wrapper.__name__ = func.__name__
+    return wrapper
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -70,6 +68,7 @@ def simple_key_points_from_text(text: str, max_points: int = 5):
 # ------------ TRANSCRIBE ROUTE ------------
 
 @app.route("/transcribe", methods=["POST"])
+@require_access_code
 def transcribe_audio():
     if "file" not in request.files:
         return {"error": "No file uploaded"}, 400
@@ -115,6 +114,7 @@ def transcribe_audio():
 # ------------ HISTORY ROUTE ------------
 
 @app.route("/history", methods=["GET"])
+@require_access_code
 def history():
     """
     Returns a lightweight list for the dashboard.
@@ -138,6 +138,7 @@ def history():
 # ------------ LECTURE DETAIL ROUTE ------------
 
 @app.route("/lecture/<int:lecture_id>", methods=["GET"])
+@require_access_code
 def lecture_detail(lecture_id):
     lecture = get_transcription_by_id(lecture_id)
     if not lecture:
@@ -163,6 +164,7 @@ def lecture_detail(lecture_id):
 
 # ------------ DELETE LECTURE ROUTE ------------
 @app.route("/lecture/<int:lecture_id>", methods=["DELETE"])
+@require_access_code
 def delete_lecture(lecture_id):
     # we just assume id exists; for a real app you’d check first
     delete_transcription(lecture_id)
