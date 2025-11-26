@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { uploadAndTranscribe } from "../api.js";
+import { uploadAndTranscribe } from "../api/api.js";
 import AudioPlayer from "../components/AudioPlayer.jsx";
 
 export default function Upload() {

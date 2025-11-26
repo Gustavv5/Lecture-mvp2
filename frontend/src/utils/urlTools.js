@@ -1,4 +1,4 @@
-import { ACCESS_CODE } from "../api/api";
+import { ACCESS_CODE } from "../api/api.js";
 
 export function withCode(url) {
   if (!ACCESS_CODE) return url;

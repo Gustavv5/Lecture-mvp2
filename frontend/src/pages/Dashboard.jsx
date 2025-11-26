@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchHistory, deleteLecture } from "../api.js";
+import { fetchHistory, deleteLecture } from "../api/api.js";
 import LectureCard from "../components/LectureCard.jsx";
 
 export default function Dashboard() {
