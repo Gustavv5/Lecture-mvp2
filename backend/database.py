@@ -1,83 +1,66 @@
-import sqlite3
+import os
+import psycopg2
+import psycopg2.extras
 
-DB_NAME = "transcriptions.db"
-
+# Render provides DATABASE_URL automatically
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def get_conn():
-    return sqlite3.connect(DB_NAME)
-
+    return psycopg2.connect(DATABASE_URL, sslmode="require")
 
 def init_db():
-    """Ensure the table exists. Call this once on startup."""
+    """Create table if not exists (PostgreSQL)."""
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute(
-        """
+    cur.execute("""
         CREATE TABLE IF NOT EXISTS transcriptions (
+            id SERIAL PRIMARY KEY,
             filename TEXT,
             transcript TEXT,
             summary TEXT
-        )
-        """
-    )
+        );
+    """)
     conn.commit()
+    cur.close()
     conn.close()
-
 
 def insert_transcription(filename, transcript, summary):
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute(
-        """
+    cur.execute("""
         INSERT INTO transcriptions (filename, transcript, summary)
-        VALUES (?, ?, ?)
-        """,
-        (filename, transcript, summary),
-    )
+        VALUES (%s, %s, %s);
+    """, (filename, transcript, summary))
     conn.commit()
+    cur.close()
     conn.close()
-
 
 def get_transcriptions():
-    """
-    Return all rows as a list of dicts:
-    {id, filename, transcript, summary}
-    """
     conn = get_conn()
-    cur = conn.cursor()
-    cur.execute(
-        "SELECT rowid, filename, transcript, summary "
-        "FROM transcriptions ORDER BY rowid DESC"
-    )
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT * FROM transcriptions ORDER BY id DESC;")
     rows = cur.fetchall()
+    cur.close()
     conn.close()
-    return [
-        {"id": r[0], "filename": r[1], "transcript": r[2], "summary": r[3]}
-        for r in rows
-    ]
+    return rows
 
-
-def get_transcription_by_id(rowid: int):
+def get_transcription_by_id(id):
     conn = get_conn()
-    cur = conn.cursor()
-    cur.execute(
-        "SELECT rowid, filename, transcript, summary "
-        "FROM transcriptions WHERE rowid = ?",
-        (rowid,),
-    )
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT * FROM transcriptions WHERE id = %s;", (id,))
     row = cur.fetchone()
+    cur.close()
     conn.close()
-    if not row:
-        return None
-    return {"id": row[0], "filename": row[1], "transcript": row[2], "summary": row[3]}
+    return row
 
-
-def delete_transcription(rowid: int):
+def delete_transcription(id):
     conn = get_conn()
     cur = conn.cursor()
-    cur.execute("DELETE FROM transcriptions WHERE rowid = ?", (rowid,))
+    cur.execute("DELETE FROM transcriptions WHERE id = %s;", (id,))
     conn.commit()
+    cur.close()
     conn.close()
+
 
 
 
