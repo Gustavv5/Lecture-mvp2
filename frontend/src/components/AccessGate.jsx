@@ -1,5 +1,5 @@
 import React from "react";
-import { ACCESS_CODE } from "./api/api.js";
+import { ACCESS_CODE } from "../api/api.js";
 
 export default function AccessGate({ children }) {
   if (!ACCESS_CODE) {
