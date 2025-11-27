@@ -27,7 +27,7 @@ with app.app_context():
     except Exception as e:
         print("DB init failed:", e)
 
-# ------------ ACCESS CODE PROTECTION ------------
+
 ACCESS_CODE = os.getenv("ACCESS_CODE")
 
 
@@ -44,7 +44,7 @@ def require_access_code(func):
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
-# ---------- Small helpers for MVP ----------
+
 
 def simple_category_from_text(text: str) -> str:
     """Very rough category detection based on keywords."""
@@ -75,7 +75,7 @@ def simple_key_points_from_text(text: str, max_points: int = 5):
     return points
 
 
-# ------------ TRANSCRIBE ROUTE ------------
+
 
 @app.route("/transcribe", methods=["POST"])
 @require_access_code
@@ -85,12 +85,12 @@ def transcribe_audio():
 
     file = request.files["file"]
 
-    # Save file temporarily
+    
     with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as temp:
         file.save(temp.name)
         audio_path = temp.name
 
-    # Send to Whisper
+    
     try:
         with open(audio_path, "rb") as audio:
             result = client.audio.transcriptions.create(
@@ -105,11 +105,10 @@ def transcribe_audio():
     category = simple_category_from_text(transcript)
     key_points = simple_key_points_from_text(transcript)
 
-    # Save to DB (we only store transcript + summary;
-    # category and key_points are recomputed when needed)
+    
     insert_transcription(file.filename, transcript, summary)
 
-    # Frontend gets everything in one go
+    
     return jsonify(
         {
             "filename": file.filename,
@@ -121,7 +120,7 @@ def transcribe_audio():
     )
 
 
-# ------------ HISTORY ROUTE ------------
+
 
 @app.route("/history", methods=["GET"])
 @require_access_code
@@ -145,7 +144,7 @@ def history():
     return jsonify(result)
 
 
-# ------------ LECTURE DETAIL ROUTE ------------
+
 
 @app.route("/lecture/<int:lecture_id>", methods=["GET"])
 @require_access_code
@@ -169,20 +168,20 @@ def lecture_detail(lecture_id):
     )
 
 
-# ------------ DELETE LECTURE ROUTE ------------
 
 
-# ------------ DELETE LECTURE ROUTE ------------
+
+
 @app.route("/lecture/<int:lecture_id>", methods=["DELETE"])
 @require_access_code
 def delete_lecture(lecture_id):
-    # we just assume id exists; for a real app you’d check first
+    
     delete_transcription(lecture_id)
     return {"status": "deleted", "id": lecture_id}
 
 
 
-# ------------ HOME ROUTE ------------
+
 
 @app.route("/", methods=["GET"])
 def home():
@@ -190,7 +189,7 @@ def home():
 
 
 if __name__ == "__main__":
-    # Ensure DB table exists when running locally
+    
     init_db()
     app.run(host="0.0.0.0", port=5000)
 

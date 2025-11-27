@@ -1,25 +1,23 @@
-// ---------------- ACCESS CODE HANDLING ---------------- //
 
-// Try to load ?code=SECRET from URL OR from stored localStorage
 const urlParams = new URLSearchParams(window.location.search);
 const urlCode = urlParams.get("code");
 
-// If URL contains a code, save it
+
 if (urlCode) {
   localStorage.setItem("ACCESS_CODE", urlCode);
 }
 
-// Use saved code for every request
+
 export const ACCESS_CODE = localStorage.getItem("ACCESS_CODE") || null;
 
 
 
-// ---------------- API BASE URL ---------------- //
+
 
 const API_BASE = "https://lecture-mvp2-1.onrender.com";
 
 
-// ---------------- UNIVERSAL API FETCH HELPER ---------------- //
+
 
 async function apiFetch(endpoint, options = {}) {
   return fetch(`${API_BASE}${endpoint}`, {
@@ -32,7 +30,7 @@ async function apiFetch(endpoint, options = {}) {
 }
 
 
-// ---------------- EXPORTED FRONTEND FUNCTIONS ---------------- //
+
 
 export async function uploadAudio(file) {
   const formData = new FormData();

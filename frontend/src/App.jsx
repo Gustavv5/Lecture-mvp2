@@ -5,9 +5,9 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Upload from "./pages/Upload.jsx";
 import LectureDetail from "./pages/LectureDetail.jsx";
 
-import AccessGate from "./components/AccessGate.jsx";  // <-- YOU have AccessGate here
-import { ACCESS_CODE } from "./api/api.js"; // <-- Your actual path
-import { withCode } from "./utils/urlTools.js"; // <-- Your actual path
+import AccessGate from "./components/AccessGate.jsx";  
+import { ACCESS_CODE } from "./api/api.js"; 
+import { withCode } from "./utils/urlTools.js"; 
 
 export default function App() {
 

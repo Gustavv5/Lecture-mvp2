@@ -9,7 +9,7 @@ export default function LectureDetail() {
 
   const lecture = location.state?.lecture;
 
-  // Two separate expand/collapse states
+  
   const [showFullSummary, setShowFullSummary] = useState(false);
   const [showFullTranscript, setShowFullTranscript] = useState(false);
 
